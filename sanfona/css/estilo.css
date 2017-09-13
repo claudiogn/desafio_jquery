@@ -1,0 +1,24 @@
+#pagina{
+	width: 720px;
+	margin: 80px auto;
+}
+#pagina h2{
+	background-color: #f0f0f0;
+	text-align: center;
+	padding: 20px 0;
+}
+#pagina .titulo{
+	background-color: #8E42AE;
+	padding: 17px;
+
+}
+#pagina .caixa{
+	border:solid 2px #9A59B7;
+}
+#pagina .conteudo{
+	padding:15px 7px;
+	text-align: justify;
+}
+#pagina .hide{
+	display: none;
+}
