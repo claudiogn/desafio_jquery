@@ -8,30 +8,69 @@ $(document).ready(function() {
     //Inserir um comando para deixar a div #alerta movel  (Dica: função da jqueryui)
         $('#alerta').draggable();
     //chamar a funcão chamada "contador"
-        contador();
+        contador();        
+
     //Fazer a alerta aparecer depois de 5 segundos, chamando ã função toggleAlert
-      
+      setTimeout(function(){
+        toggleAlert();
+      },5000);
+
     $("#novidadesform [type='submit']").click(function(e) {
         e.preventDefault();
 
         //criar uma variavel e pegar o conteudo digitado na input
+        var conteudo = $('input').val();
         //verificar se o campo não está vazio com if e else
-
+        
         //se for vazio execultar o comando abaixo
         //toastr.error('Preencha um email!', 'Error!');
+        if (conteudo == '') {
+            toastr.error('Preencha um email!', 'Error!');
+        }
+        else{
 
-        //se não for vazio enviar uma requisição com -requisição AJAX- do tipo POST para http://51.254.204.44/ti/enviar_email.php 
-        // -- passando o paramentro "meuemail" e o dataType JSON
+            //se não for vazio enviar uma requisição com -requisição AJAX- do tipo POST para http://51.254.204.44/ti/enviar_email.php 
+            // -- passando o paramentro "meuemail" e o dataType JSON
 
-        //SE OCORRER TUDO CERTO COM A REQUISIÇAO: 1° exibir um toastr.sucess com a mensagem  | 2° 
-        // 2° colocar um texto na div  de class resultado. "*emaildigitado* foi salvo em nossa lista de novidades =)"
-        //limpar input
-        //fechar a alerta depois de 2 segundos
+             $.ajax({
+                url : 'http://51.254.204.44/ti/enviar_email.php',
+                type : 'post',
+                data : {'meuemail':conteudo},
+                dataType :'json',
 
-        //SE não ocorrer tudo certo a alerta ñ deve fechar. Exibir um toastr.error com a mensagem do erro retornada pelo servidor
+                beforeSend: function(){
 
+                },
+                
+                success: function(retorno){
+                //SE OCORRER TUDO CERTO COM A REQUISIÇAO: 1° exibir um toastr.sucess com a mensagem  | 2° 
+                // 2° colocar um texto na div  de class resultado. "*emaildigitado* foi salvo em nossa lista de novidades =)"
+                //limpar input
+                //fechar a alerta depois de 2 segundos
+                    console.log(retorno);
+                    toastr.success('Requisição bem sucedida','Sucesso!');
+                    $('.resultado').text(conteudo + ' foi salvo em nossa lista de novidades =)');
+                    $('input').val('');
+                    setTimeout(function(){
+                        $('#alerta').fadeOut(2000);
+                    }, 2000);
+                    
 
+                },
+                error: function(erro){
 
+                //SE não ocorrer tudo certo a alerta ñ deve fechar. Exibir um toastr.error com a mensagem do erro retornada pelo servidor
+                    console.log(erro.responseText);
+                    toastr.error(erro.responseText,'Error!');
+                }
+
+            })
+        }
+
+    });
+
+    $('a').click(function(){
+        toggleAlert();
     });
 });
 
@@ -48,21 +87,23 @@ var i = 5;
 function contador() {
 
     var intervalo = setInterval(function() {
+        //Sinalizar contador. Ex: Alerta aparecendo em: __  (usar a div #contador)
         $('#contador').text('Alerta aparecendo em: ' +i);
         
     //Mudar a cor do texto da div #contador qnd o cronometro ser menor ou igual a TRES
         if(i==3){
             $('#contador').css('color','#ff0000');
         }
-        
-        
+
+
         i--;
 
         if (i == 0) {
     //Ocultar a div #contador qnd o cronometro ser menor ou igual a ZERO
             clearInterval(intervalo);
             $('#contador').fadeOut('slow');
-            toggleAlert();
+  
+            
         }
 
 
@@ -70,10 +111,7 @@ function contador() {
     }, 1000);
    
 
-    //Mudar a cor do texto da div #contador qnd o cronometro ser menor ou igual a TRES
 
-
-    //Sinalizar contador. Ex: Alerta aparecendo em: __  (usar a div #contador)
     
 }
 
